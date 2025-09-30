@@ -271,9 +271,18 @@ sudo --preserve-env=PATH -u vagrant /home/vagrant/.local/bin/awx job_templates c
 
 # https://docs.ansible.com/ansible-tower/latest/html/towercli/reference.html#awx-credentials-create
 echo -e '\e[38;5;198m'"++++ "
-echo -e '\e[38;5;198m'"++++ Add credentials ansible"
+echo -e '\e[38;5;198m'"++++ Add credential type Machine"
 echo -e '\e[38;5;198m'"++++ "
 sudo --preserve-env=PATH -u vagrant /home/vagrant/.local/bin/awx credentials create --credential_type 'Machine' --organization 'Default' --name 'ansible' --inputs '{"username": "vagrant", "password": "vagrant"}' $AWX_COMMON
+
+# https://docs.ansible.com/ansible-tower/latest/html/towercli/reference.html#awx-credentials-create
+# https://www.hashicorp.com/en/blog/managing-ansible-automation-platform-aap-credentials-at-scale-with-vault
+VAULT_TOKEN=$(grep 'Initial Root Token' /etc/vault/init.file | cut -d ':' -f2 | tr -d ' ')
+echo -e '\e[38;5;198m'"++++ "
+echo -e '\e[38;5;198m'"++++ Add credential type HashiCorp Vault Signed SSH"
+echo -e '\e[38;5;198m'"++++ "
+sudo --preserve-env=PATH -u vagrant /home/vagrant/.local/bin/awx credentials create --credential_type 'HashiCorp Vault Signed SSH' --organization 'Default' --name 'HashiCorp Vault Signed SSH' --inputs '{"url": "http://172.18.0.1:8200", "token": "${VAULT_TOKEN}"}' $AWX_COMMON
+
 
 # https://docs.ansible.com/ansible-tower/latest/html/towercli/reference.html#awx-job-templates
 # echo -e '\e[38;5;198m'"++++ "
